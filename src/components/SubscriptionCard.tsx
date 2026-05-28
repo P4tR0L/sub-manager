@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Person, Rates, Subscription } from '../types';
 import { subscriptionsApi } from '../lib/api';
 import { convertToPLN, formatMoney, splitPerPerson } from '../lib/money';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface Props {
   subscription: Subscription;
@@ -13,6 +14,7 @@ interface Props {
 
 export function SubscriptionCard({ subscription, people, rates, onEdit, onDeleted }: Props) {
   const [busy, setBusy] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { currency } = subscription;
   const perPerson = splitPerPerson(subscription.monthlyAmount, subscription.memberIds.length);
 
@@ -33,12 +35,12 @@ export function SubscriptionCard({ subscription, people, rates, onEdit, onDelete
     );
   }
 
-  async function handleDelete() {
-    if (!confirm(`Usunąć subskrypcję "${subscription.name}"?`)) return;
+  async function handleDeleteConfirm() {
     setBusy(true);
     try {
       await subscriptionsApi.remove(subscription.id);
       await onDeleted(subscription.id);
+      setConfirmOpen(false);
     } finally {
       setBusy(false);
     }
@@ -55,11 +57,24 @@ export function SubscriptionCard({ subscription, people, rates, onEdit, onDelete
           <button className="ghost sm" onClick={onEdit} disabled={busy}>
             Edytuj
           </button>
-          <button className="danger sm" onClick={handleDelete} disabled={busy}>
+          <button className="danger sm" onClick={() => setConfirmOpen(true)} disabled={busy}>
             Usuń
           </button>
         </div>
       </header>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Usuń subskrypcję"
+        message={
+          <>
+            Czy na pewno chcesz usunąć subskrypcję <strong>{subscription.name}</strong>?
+          </>
+        }
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setConfirmOpen(false)}
+        busy={busy}
+      />
 
       <ul className="members">
         {members.map((person) => (
