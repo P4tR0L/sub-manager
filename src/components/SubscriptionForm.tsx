@@ -5,7 +5,7 @@ import { subscriptionsApi } from '../lib/api';
 interface Props {
   people: Person[];
   editing: Subscription | null;
-  onSaved: () => Promise<void> | void;
+  onSaved: (saved: Subscription) => Promise<void> | void;
   onCancelEdit: () => void;
 }
 
@@ -56,13 +56,11 @@ export function SubscriptionForm({ people, editing, onSaved, onCancelEdit }: Pro
     setError(null);
     const payload = { name: name.trim(), monthlyAmount: amountNum, currency, memberIds };
     try {
-      if (editing) {
-        await subscriptionsApi.update(editing.id, payload);
-      } else {
-        await subscriptionsApi.create(payload);
-      }
+      const saved = editing
+        ? await subscriptionsApi.update(editing.id, payload)
+        : await subscriptionsApi.create(payload);
       reset();
-      await onSaved();
+      await onSaved(saved);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Nie udało się zapisać.');
     } finally {

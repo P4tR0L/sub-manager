@@ -48,6 +48,22 @@ export function App() {
     void loadRates();
   }, [reload, loadRates]);
 
+  const upsertSubscription = useCallback((saved: Subscription) => {
+    setSubscriptions((prev) => {
+      const idx = prev.findIndex((s) => s.id === saved.id);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = saved;
+        return next;
+      }
+      return [...prev, saved];
+    });
+  }, []);
+
+  const removeSubscription = useCallback((id: string) => {
+    setSubscriptions((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
   const reorderPeople = useCallback(async (orderedIds: string[]) => {
     setError(null);
     setPeople((prev) => {
@@ -96,9 +112,9 @@ export function App() {
             people={people}
             editing={editing}
             onCancelEdit={() => setEditing(null)}
-            onSaved={async () => {
+            onSaved={(saved) => {
               setEditing(null);
-              await reload();
+              upsertSubscription(saved);
             }}
           />
 
@@ -115,7 +131,7 @@ export function App() {
                   people={people}
                   rates={rates}
                   onEdit={() => setEditing(sub)}
-                  onDeleted={reload}
+                  onDeleted={removeSubscription}
                 />
               ))}
             </div>

@@ -53,11 +53,23 @@ export class FileStorageAdapter implements StorageAdapter {
   }
 }
 
+function blobReadOptions(): { type: 'json'; consistency?: 'strong' } {
+  const opts = { type: 'json' as const };
+  // Production Lambdas only — netlify dev uses eventual reads without uncachedEdgeURL.
+  if (Boolean(process.env.SITE_ID) && process.env.NETLIFY !== 'true') {
+    return { ...opts, consistency: 'strong' };
+  }
+  return opts;
+}
+
 export class BlobStorageAdapter implements StorageAdapter {
-  private store = getStore(STORE_NAME);
+  /** Fresh store per call — Netlify Blobs tokens are short-lived; a cached client expires on warm Lambdas. */
+  private store() {
+    return getStore(STORE_NAME);
+  }
 
   async readDb(): Promise<Database | null> {
-    const data = await this.store.get(DB_KEY, { type: 'json' });
+    const data = await this.store().get(DB_KEY, blobReadOptions());
     if (!data) return null;
     const parsed = data as Partial<Database>;
     return {
@@ -67,15 +79,15 @@ export class BlobStorageAdapter implements StorageAdapter {
   }
 
   async writeDb(db: Database): Promise<void> {
-    await this.store.setJSON(DB_KEY, db);
+    await this.store().setJSON(DB_KEY, db);
   }
 
   async readRatesCache(): Promise<Rates | null> {
-    return (await this.store.get(RATES_KEY, { type: 'json' })) as Rates | null;
+    return (await this.store().get(RATES_KEY, blobReadOptions())) as Rates | null;
   }
 
   async writeRatesCache(rates: Rates): Promise<void> {
-    await this.store.setJSON(RATES_KEY, rates);
+    await this.store().setJSON(RATES_KEY, rates);
   }
 }
 

@@ -8,7 +8,7 @@ interface Props {
   people: Person[];
   rates: Rates | null;
   onEdit: () => void;
-  onDeleted: () => Promise<void> | void;
+  onDeleted: (id: string) => Promise<void> | void;
 }
 
 export function SubscriptionCard({ subscription, people, rates, onEdit, onDeleted }: Props) {
@@ -38,7 +38,7 @@ export function SubscriptionCard({ subscription, people, rates, onEdit, onDelete
     setBusy(true);
     try {
       await subscriptionsApi.remove(subscription.id);
-      await onDeleted();
+      await onDeleted(subscription.id);
     } finally {
       setBusy(false);
     }
