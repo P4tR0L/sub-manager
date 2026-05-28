@@ -41,7 +41,13 @@ Aplikacja będzie dostępna pod `http://localhost:4321`. Dane zapisywane są w `
 npm run dev:netlify
 ```
 
-Uruchamia Astro przez Netlify CLI — używa Blobs zamiast plików (jak produkcja).
+Uruchamia Astro przez Netlify CLI — używa lokalnego sandboxa Blobs (osobny od produkcji). Po pierwszym uruchomieniu:
+
+```bash
+npm run seed:blobs
+```
+
+(`dev:netlify` nie musi wtedy działać — seed zapisuje do `.netlify/blobs-serve/`.)
 
 ## Deploy (Netlify)
 
@@ -70,13 +76,15 @@ Blobs nie wymagają dodatkowych kluczy API — działają automatycznie w kontek
 3. Build command: `npm run build` (Node 22 — ustawione w `netlify.toml`).
 4. Ustaw env vars: `APP_PASSWORD`, `APP_SESSION_SECRET`.
 5. Deploy.
-6. Jednorazowo zaseeduj Blobs danymi z `data/db.json`:
+6. Jednorazowo zaseeduj **produkcyjne** Blobs danymi z `data/db.json`:
 
    ```bash
    netlify link          # jeśli jeszcze nie połączone
-   netlify dev           # lub kontekst produkcyjny CLI
-   npm run seed:blobs
+   netlify login
+   npm run seed:blobs:prod
    ```
+
+   Lokalny sandbox (`dev:netlify`) seedujesz osobno — `npm run seed:blobs` (bez działającego serwera).
 
 7. Wejdź na URL → zaloguj się → sprawdź CRUD osób/subskrypcji i kursy NBP.
 

@@ -9,6 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "seed:blobs": "tsx scripts/seed-blobs.ts",
+    "seed:blobs:prod": "tsx scripts/seed-blobs.ts --production",
     "astro": "astro"
   },
   "dependencies": {

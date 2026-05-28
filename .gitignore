@@ -2,6 +2,7 @@ node_modules/
 dist/
 .netlify/
 .astro/
+deno.lock
 *.log
 .DS_Store
 .env
