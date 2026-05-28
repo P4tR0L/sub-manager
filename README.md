@@ -41,7 +41,7 @@ Aplikacja będzie dostępna pod `http://localhost:4321`. Dane zapisywane są w `
 npm run dev:netlify
 ```
 
-Uruchamia Astro przez Netlify CLI — ustawia `NETLIFY=true` i używa Blobs zamiast plików.
+Uruchamia Astro przez Netlify CLI — używa Blobs zamiast plików (jak produkcja).
 
 ## Deploy (Netlify)
 
@@ -50,7 +50,7 @@ Uruchamia Astro przez Netlify CLI — ustawia `NETLIFY=true` i używa Blobs zami
 | Środowisko | Backend | Źródło prawdy |
 |------------|---------|---------------|
 | Lokalny dev (`npm run dev`) | pliki `data/*.json` | `data/db.json` |
-| Netlify (`NETLIFY=true`) | Netlify Blobs (store `sub-manager`) | blob `db` |
+| Netlify (dev i produkcja) | Netlify Blobs (store `sub-manager`) | blob `db` |
 
 Plik `data/db.json` w repozytorium służy jako seed dev i źródło do jednorazowej migracji — **nie** jest bazą produkcyjną. Plik jest **lokalny** (pomijany w gicie, jak `data/rates.json`).
 

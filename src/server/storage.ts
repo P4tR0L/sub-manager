@@ -88,14 +88,22 @@ function isNotFound(err: unknown): boolean {
   );
 }
 
+/** Netlify sets NETLIFY=true only in `netlify dev`; production functions get SITE_ID / AWS Lambda vars instead. */
+function isNetlifyRuntime(): boolean {
+  return (
+    process.env.NETLIFY === 'true' ||
+    Boolean(process.env.SITE_ID) ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME)
+  );
+}
+
 let storageInstance: StorageAdapter | null = null;
 
 export function getStorage(): StorageAdapter {
   if (!storageInstance) {
-    storageInstance =
-      process.env.NETLIFY === 'true'
-        ? new BlobStorageAdapter()
-        : new FileStorageAdapter();
+    storageInstance = isNetlifyRuntime()
+      ? new BlobStorageAdapter()
+      : new FileStorageAdapter();
   }
   return storageInstance;
 }
