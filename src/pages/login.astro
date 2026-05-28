@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+
+const error = Astro.url.searchParams.get('error') === '1';
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logowanie — Menedżer subskrypcji</title>
+  </head>
+  <body>
+    <div class="container login-page">
+      <div class="panel login-panel">
+        <h1>Logowanie</h1>
+        <p class="muted">Wprowadź hasło, aby uzyskać dostęp do menedżera subskrypcji.</p>
+        {error && <div class="alert">Nieprawidłowe hasło.</div>}
+        <form class="login-form" method="post" action="/api/auth/login">
+          <label class="field">
+            <span>Hasło</span>
+            <input type="password" name="password" required autocomplete="current-password" />
+          </label>
+          <button type="submit">Zaloguj</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-panel {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .login-panel h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+</style>

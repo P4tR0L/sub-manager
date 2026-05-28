@@ -1,0 +1,22 @@
+---
+import { App } from '../components/App';
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Menedżer subskrypcji</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="app-head">
+        <h1>Menedżer subskrypcji</h1>
+        <p>Zarządzaj subskrypcjami i dziel koszty między osoby.</p>
+      </header>
+      <App client:load />
+    </div>
+  </body>
+</html>

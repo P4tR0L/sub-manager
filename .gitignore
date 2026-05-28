@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.netlify/
+.astro/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+data/db.json
+data/rates.json
